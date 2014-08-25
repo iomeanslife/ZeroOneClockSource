@@ -1,0 +1,249 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="BinaryClockTry1.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:l="clr-namespace:BinaryClockTry1"
+    x:Name="PhoneAppPage"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="False" Loaded="PhoneApplicationPage_Loaded_1"
+    
+    >
+    <phone:PhoneApplicationPage.DataContext>
+        <l:ClockViewModel/>
+    </phone:PhoneApplicationPage.DataContext>
+    
+    <!--shell:SystemTray.ForegroundColor="Transparent"-->
+    
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.Resources>
+            <Storyboard x:Key="unhidenerdblendstoryboard" x:Name="UnhideNerdBlendStoryboard" >
+                <DoubleAnimation Storyboard.TargetName="NerdBlendProjection"
+                            Storyboard.TargetProperty="RotationX"
+                            Duration="0:0:1" From="0" To="-80">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseIn" Exponent="3"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <!--<DoubleAnimation Storyboard.TargetName="PhoneApp" 
+                                 Storyboard.TargetProperty="shell:SystemTray.Opacity"
+                                 Duration="0:0:3" From="0.0" To="1.0"/>-->
+            </Storyboard>
+            <l:DigitToBinaryConverter x:Key="DigitToBinaryConverter"/>
+            <Style TargetType="TextBlock" x:Key="TextBlockStyle">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Foreground" Value="{StaticResource PhoneAccentBrush}"/>
+            </Style>
+            <Style TargetType="Rectangle" x:Key="DigitStyle">
+                <Setter Property="Fill" Value="{StaticResource PhoneAccentBrush}"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- HINWEIS ZUR LOKALISIERUNG:
+            Um die angezeigten Zeichenfolgen zu lokalisieren, kopieren Sie die Werte in
+            die richtig benannten Schlüssel in der Datei der neutralen Ressourcensprache der App (AppResources.resx), und
+            ersetzen Sie den hartcodierten Textwert zwischen den Anführungszeichen des Attributs
+            mit der Bindungsklausel, deren Pfad auf diesen Zeichenfolgennamen verweist.
+
+            Zum Beispiel:
+
+                Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
+
+            Diese Bindung verweist auf die Zeichenfolgenressource der Vorlage mit der Bezeichnung "ApplicationTitle".
+
+            Werden auf der Registerkarte mit den Projekteigenschaften unterstützte Sprachen hinzugefügt, wird
+            pro Sprache eine neue resx-Datei erstellt. In dieser können die übersetzten Werte der
+            Zeichenfolgen der Benutzeroberfläche gespeichert werden. Die Bindung in diesen Beispielen führt dazu, dass der Wert der
+            Attribute aus der RESX-Datei entnommen wird, die
+            CurrentUICulture der App zur Laufzeit entspricht.
+         -->
+
+        <!--TitlePanel enthält den Namen der Anwendung und den Seitentitel-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="01 Clock" Style="{StaticResource PhoneTextNormalStyle}"/>
+        </StackPanel>
+
+        <!--ContentPanel - zusätzliche Inhalte hier platzieren-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Rectangle Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="4" Stroke="{StaticResource PhoneBorderBrush}" StrokeThickness="2"/>
+            <Rectangle Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="4" Stroke="{StaticResource PhoneBorderBrush}" StrokeThickness="2"/>
+            <Rectangle Grid.Column="6" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="4" Stroke="{StaticResource PhoneBorderBrush}" StrokeThickness="2"/>
+
+
+            <Rectangle x:Name="BinarySecondOnesToOne" Style="{StaticResource DigitStyle}" Grid.Column="7" Grid.Row="4" Visibility="{Binding Digit6, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="BinarySecondOnesToTwo" Style="{StaticResource DigitStyle}" Grid.Column="7" Grid.Row="3" Visibility="{Binding Digit6, ConverterParameter=2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+
+            <Border x:Name="HideOverflowSegements5"  Grid.Column="7" Grid.Row="3"  >
+                <!--<Rectangle x:Name="BinarySecondOnesToTwoDisabled" Style="{StaticResource DigitStyle}" Grid.Column="7" Grid.Row="3" Visibility="{Binding Digit6, ConverterParameter=-2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>-->
+                <Rectangle x:Name="BinarySecondOnesToTwoDisabled" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit6, ConverterParameter=-2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Rectangle x:Name="BinarySecondOnesToFour" Style="{StaticResource DigitStyle}"   Grid.Column="7" Grid.Row="2" Visibility="{Binding Digit6, ConverterParameter=3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+
+            <Border x:Name="HideOverflowSegements6"   Grid.Column="7" Grid.Row="2" >
+                <!--<Rectangle x:Name="BinarySecondOnesToFourDisabled" Style="{StaticResource DigitStyle}"   Grid.Column="7" Grid.Row="2" Visibility="{Binding Digit6, ConverterParameter=-3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>-->
+                <Rectangle x:Name="BinarySecondOnesToFourDisabled" Style="{StaticResource DigitStyle}"  Visibility="{Binding Digit6, ConverterParameter=-3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Rectangle x:Name="BinarySecondOnesToEight" Style="{StaticResource DigitStyle}"   Grid.Column="7" Grid.Row="1" Visibility="{Binding Digit6, ConverterParameter=4;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+
+            <Rectangle x:Name="BinarySecondTensToOne" Style="{StaticResource DigitStyle}"   Grid.Column="6" Grid.Row="4" Visibility="{Binding Digit5, ConverterParameter=1;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="BinarySecondTensToTwo" Style="{StaticResource DigitStyle}"   Grid.Column="6" Grid.Row="3" Visibility="{Binding Digit5, ConverterParameter=2;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            
+            <Border x:Name="HideOverflowSegements3" Grid.Column="6" Grid.Row="3" >
+                <!--<Rectangle x:Name="BinarySecondTensToTwoDisabled" Style="{StaticResource DigitStyle}" Grid.Column="6" Grid.Row="3" Visibility="{Binding Digit5, ConverterParameter=-2;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>-->
+                <Rectangle x:Name="BinarySecondTensToTwoDisabled" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit5, ConverterParameter=-2;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Rectangle x:Name="BinarySecondTensToFour" Style="{StaticResource DigitStyle}"   Grid.Column="6" Grid.Row="2" Visibility="{Binding Digit5, ConverterParameter=3;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="HideOverflowSegements12" Style="{StaticResource DigitStyle}"  Grid.Column="6" Grid.Row="1" Visibility="Visible" Fill="{StaticResource PhoneBorderBrush}"/>
+
+            <Rectangle x:Name="BinaryMinuteOnesToOne" Style="{StaticResource DigitStyle}"   Grid.Column="4" Grid.Row="4" Visibility="{Binding Digit4, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="BinaryMinuteOnesToTwo" Style="{StaticResource DigitStyle}"   Grid.Column="4" Grid.Row="3" Visibility="{Binding Digit4, ConverterParameter=2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Border x:Name="HideOverflowSegements2" Grid.Column="4" Grid.Row="3" >
+                <!--<Rectangle x:Name="BinaryMinuteOnesToTwoDisabled" Style="{StaticResource DigitStyle}" Grid.Column="4" Grid.Row="3" Visibility="{Binding Digit4, ConverterParameter=-2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>-->
+                <Rectangle x:Name="BinaryMinuteOnesToTwoDisabled" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit4, ConverterParameter=-2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Rectangle x:Name="BinaryMinuteOnesToFour" Style="{StaticResource DigitStyle}"   Grid.Column="4" Grid.Row="2" Visibility="{Binding Digit4, ConverterParameter=3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            
+            <Border x:Name="HideOverflowSegements4" Grid.Column="4" Grid.Row="2" >
+                <!--<Rectangle x:Name="BinaryMinuteOnesToFourDisabled" Style="{StaticResource DigitStyle}" Grid.Column="4" Grid.Row="2" Visibility="{Binding Digit4, ConverterParameter=-3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>-->
+                <Rectangle x:Name="BinaryMinuteOnesToFourDisabled" Style="{StaticResource DigitStyle}"  Visibility="{Binding Digit4, ConverterParameter=-3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Rectangle x:Name="BinaryMinuteOnesToEight" Style="{StaticResource DigitStyle}"   Grid.Column="4" Grid.Row="1" Visibility="{Binding Digit4, ConverterParameter=4;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+
+            <Rectangle x:Name="BinaryMinuteTensToOne" Style="{StaticResource DigitStyle}"   Grid.Column="3" Grid.Row="4" Visibility="{Binding Digit3, ConverterParameter=1;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="BinaryMinuteTensToTwo" Style="{StaticResource DigitStyle}"   Grid.Column="3" Grid.Row="3" Visibility="{Binding Digit3, ConverterParameter=2;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Border x:Name="HideOverflowSegements1" Grid.Column="3" Grid.Row="3" >
+                <Rectangle x:Name="BinaryMinuteTensToTwoDisabled" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit3, ConverterParameter=-2;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+                <!--<Rectangle x:Name="BinaryMinuteTensToTwoDisabled" Style="{StaticResource DigitStyle}" Grid.Column="3" Grid.Row="3" Visibility="{Binding Digit3, ConverterParameter=-2;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>-->
+            </Border>
+            <Rectangle x:Name="BinaryMinuteTensToFour" Style="{StaticResource DigitStyle}"   Grid.Column="3" Grid.Row="2" Visibility="{Binding Digit3, ConverterParameter=3;6, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="HideOverflowSegements10" Style="{StaticResource DigitStyle}"  Grid.Column="3" Grid.Row="1" Visibility="Visible" Fill="{StaticResource PhoneBorderBrush}"/>
+
+            <Rectangle x:Name="BinaryHourOnesToOne" Style="{StaticResource DigitStyle}"   Grid.Column="1" Grid.Row="4" Visibility="{Binding Digit2, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="BinaryHourOnesToTwo" Style="{StaticResource DigitStyle}"   Grid.Column="1" Grid.Row="3" Visibility="{Binding Digit2, ConverterParameter=2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>    
+            <Border x:Name="HideOverflowSegements7" Grid.Column="1" Grid.Row="3" >
+                <Rectangle x:Name="BinaryHourOnesToTwoDisabled" Style="{StaticResource DigitStyle}" Grid.Column="1" Grid.Row="3" Visibility="{Binding Digit2, ConverterParameter=-2;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Rectangle x:Name="BinaryHourOnesToFour" Style="{StaticResource DigitStyle}"   Grid.Column="1" Grid.Row="2" Visibility="{Binding Digit2, ConverterParameter=3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Border x:Name="HideOverflowSegements8" Grid.Column="1" Grid.Row="2" >
+                <Rectangle x:Name="BinaryHourOnesToFourDisabled" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit2, ConverterParameter=-3;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Border x:Name="HideOverflowSegements14" Grid.Column="1" Grid.Row="2" >
+                <Rectangle x:Name="BinaryHourOnesToFourDisabledAlt" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit1, ConverterParameter=-1;4, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            
+            <Rectangle x:Name="BinaryHourOnesToEight" Style="{StaticResource DigitStyle}"   Grid.Column="1" Grid.Row="1" Visibility="{Binding Digit2, ConverterParameter=4;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Border x:Name="HideOverflowSegements15" Grid.Column="1" Grid.Row="1" >
+                <Rectangle x:Name="BinaryHourOnesToEightDisabledAlt" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit1, ConverterParameter=-1;4, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+
+            <Rectangle x:Name="BinaryHourTensToOne" Style="{StaticResource DigitStyle}"   Grid.Column="0" Grid.Row="4" Visibility="{Binding Digit1, ConverterParameter=1;2, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            
+            <Border x:Name="HideOverflowSegements9" Grid.Column="0" Grid.Row="4" >
+                <Rectangle x:Name="BinaryHourTensToOneDisabled" Style="{StaticResource DigitStyle}" Visibility="{Binding Digit1, ConverterParameter=-1;2, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" Fill="{StaticResource PhoneBorderBrush}"/>
+            </Border>
+            <Rectangle x:Name="BinaryHourTensToTwo" Style="{StaticResource DigitStyle}"   Grid.Column="0" Grid.Row="3" Visibility="{Binding Digit1, ConverterParameter=2;2, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/>
+            <Rectangle x:Name="HideOverflowSegements11"  Style="{StaticResource DigitStyle}"  Grid.Column="0" Grid.Row="1" Visibility="Visible" Fill="{StaticResource PhoneBorderBrush}"/>
+            <Rectangle x:Name="HideOverflowSegements13"  Style="{StaticResource DigitStyle}"  Grid.Column="0" Grid.Row="2" Visibility="Visible" Fill="{StaticResource PhoneBorderBrush}"/>
+
+
+            <TextBlock Text="8" Grid.Column="8" Grid.Row="1" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}" />
+            <TextBlock Text="4" Grid.Column="8" Grid.Row="2" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+            <TextBlock Text="2" Grid.Column="8" Grid.Row="3" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+            <TextBlock Text="1" Grid.Column="8" Grid.Row="4" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}" />
+
+            <TextBlock Text="H" Grid.Column="0" TextAlignment="Center" VerticalAlignment="Center" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+            <TextBlock Text="H" Grid.Column="1" TextAlignment="Center" VerticalAlignment="Center" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"  Text=":" Visibility="{Binding Digit6, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" />
+            <TextBlock Text="M" Grid.Column="3" TextAlignment="Center" VerticalAlignment="Center" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+            <TextBlock Text="M" Grid.Column="4" TextAlignment="Center" VerticalAlignment="Center" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+            <TextBlock Grid.Column="5" Grid.Row="0" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"  Text=":" Visibility="{Binding Digit6, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" />
+            <TextBlock Text="S" Grid.Column="6"  TextAlignment="Center" VerticalAlignment="Center" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+            <TextBlock Text="S" Grid.Column="7"  TextAlignment="Center" VerticalAlignment="Center" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"/>
+
+            <TextBlock Grid.Column="6" Grid.ColumnSpan="2" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}" Grid.Row="6" x:Name="textBlockSeconds"><Run Text="{Binding Digit5, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/><Run Text="{Binding Digit6, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/></TextBlock>
+            <TextBlock Grid.Column="5" Grid.Row="6" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}" Text=":" Visibility="{Binding Digit6, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" />
+            <TextBlock Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="6" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"  x:Name="textBlockMinutes"><Run Text="{Binding Digit3, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/><Run Text="{Binding Digit4, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/></TextBlock>
+            <TextBlock Grid.Column="2" Grid.Row="6" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"  Text=":" Visibility="{Binding Digit6, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}" />
+            <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Style="{Binding Mode=OneWay, Source={StaticResource TextBlockStyle}}"  x:Name="textBlockHours" ><Run Text="{Binding Digit1, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/><Run Text="{Binding Digit2, ConverterParameter=1;9, Converter={StaticResource DigitToBinaryConverter}, Mode=OneWay}"/></TextBlock>
+
+                        
+
+            <Border Grid.Column="0" Grid.ColumnSpan="9" Grid.Row="6" DoubleTap="Border_DoubleTap_2" Background="#00000000" >
+            <Border Background="{StaticResource PhoneBackgroundBrush}" DoubleTap="Border_DoubleTap_1" x:Name="NerdBlendBorder" RenderTransformOrigin="0,0" BorderThickness="2" >
+                <Border.BorderBrush>
+                    <StaticResource ResourceKey="PhoneAccentBrush"/>
+                </Border.BorderBrush>
+                <Border.Projection>
+                    <PlaneProjection x:Name="NerdBlendProjection" CenterOfRotationY="1.3"/>
+                </Border.Projection>
+                <Border.RenderTransform>
+                    <CompositeTransform/>
+                </Border.RenderTransform>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" DoubleTap="TextBlock_DoubleTap_1" TextAlignment="Center" >
+                    <Run Text="Not Nerd Enough?"/><LineBreak/><Run Text="Double Tap!"/>
+                </TextBlock>
+            </Border>
+            </Border>
+            <HyperlinkButton HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PhoneAccentBrush}" Content="Made by: Omar Ajerray" Grid.Column="0" Grid.ColumnSpan="10" Grid.Row="7" Click="HyperlinkButton_Click_1" />
+            
+            
+            <!--Debug Stuff:-->
+            <Button x:Name="Plus10Hour" Grid.Column="0" Grid.Row="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Content="+" Click="Plus10Hour_Click_1" Visibility="Collapsed"/>
+            <Button x:Name="Plus1Hour" Grid.Column="1" Grid.Row="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Content="+" Click="Plus10Hour_Click_1" Visibility="Collapsed"/>
+            <Button x:Name="Plus10Minute" Grid.Column="3" Grid.Row="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Content="+" Click="Plus10Hour_Click_1" Visibility="Collapsed"/>
+            <Button x:Name="Plus1Minute" Grid.Column="4" Grid.Row="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Content="+" Click="Plus10Hour_Click_1" Visibility="Collapsed"/>
+        </Grid>
+        
+        <!--Auskommentieren, um ein Ausrichtungsraster anzuzeigen und sicherzustellen, dass Ihre Steuerelemente
+            an den allgemeinen Grenzen ausgerichtet sind.  Das Bild hat oben einen Rand von -32 px wegen
+            der Taskleiste. Legen Sie dies auf 0 fest (oder entfernen Sie den Rand komplett),
+            wenn die Taskleiste ausgeblendet wird.
+
+            Entfernen Sie vor dem Versand dieses XAML und das Bild selbst.-->
+        <!--<Image Source="/Assets/AlignmentGrid.png" VerticalAlignment="Top" Height="800" Width="480" Margin="0,-32,0,0" Grid.Row="0" Grid.RowSpan="2" IsHitTestVisible="False" />-->
+    </Grid>
+    
+        <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar Mode="Minimized" >
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Click="ApplicationBarMenuItem_Click_1" Text="settings" />
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+</phone:PhoneApplicationPage>

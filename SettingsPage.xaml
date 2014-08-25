@@ -1,0 +1,44 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="BinaryClockTry1.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True" Loaded="PhoneApplicationPage_Loaded_1">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="01 Clock" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+        
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ToggleButton Content="Mark overflowing segments?" x:Name="ToggleShowBinaryOferflow" Checked="ToggleShowBinaryOferflow_Checked" Unchecked="ToggleShowBinaryOferflow_Unchecked" Grid.Row="0"  />
+            <TextBlock Grid.Row="1" TextWrapping="Wrap">
+                <Run Text="This will show segments with a disable color, indicating that these won't be reached until the depending digit overflows." />
+                <LineBreak/>
+                <Run Text="This means, that it'll mark segments that would show binary values higher then 9 for any 10^0 columns, and also for binary values higher than 5 or 2, depending if it is for hours, or seconds and minutes on the 10^1 columns." />
+            </TextBlock>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>
